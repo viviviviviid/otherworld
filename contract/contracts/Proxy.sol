@@ -13,7 +13,7 @@ contract Proxy is Initializable, UUPSUpgradeable, ERC721URIStorageUpgradeable, O
     event MintERC721(uint256 tokenId, address creator, uint256 paymentAmount);
     event PaymentPriceUpdated(uint256 newPrice);
     
-    uint256 public paymentPrice;
+    uint256 public paymentPrice; // 여기와 Logic.sol의 변수 선언순서가 같아야함. 그래야 스토리지 슬롯 번호에 똑같이 값이 들어가게 됨.
     uint256 public nextTokenId;
     address public paymentLogic;
     IERC20Upgradeable public paymentToken;
