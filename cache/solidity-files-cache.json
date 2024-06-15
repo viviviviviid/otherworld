@@ -881,8 +881,8 @@
       ]
     },
     "/Users/viviviviviid/Desktop/project/otherworld/contracts/Proxy.sol": {
-      "lastModificationDate": 1718471270793,
-      "contentHash": "db0c35de4b1de0640e33513805568aac",
+      "lastModificationDate": 1718475738281,
+      "contentHash": "ad6536474b1a93935d7856d70fecf6c3",
       "sourceName": "contracts/Proxy.sol",
       "solcConfig": {
         "version": "0.8.24",
