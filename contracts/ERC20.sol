@@ -1,31 +1,12 @@
-//SPDX-License-Identifier: UNLICENSED
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract PaymentToken {
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+contract PaymentToken is ERC20 {
+    uint256 public initialSupply = 100000000;
 
-    string public name = "PaymentToken";
-    string public symbol = "PT";
-    uint256 public totalSupply = 100000000;
-    address public owner;
-
-    mapping(address => uint256) balances;
-
-    constructor() {
-        balances[msg.sender] = totalSupply;
-        owner = msg.sender;
-    }
-
-    function transfer(address to, uint256 amount) external {
-        require(balances[msg.sender] >= amount, "Not enough tokens");
-        balances[msg.sender] -= amount;
-        balances[to] += amount;
-        emit Transfer(msg.sender, to, amount);
-    }
-
-    function balanceOf(address account) external view returns (uint256) {
-        return balances[account];
+    constructor() ERC20("PaymentToken", "PT") {
+        _mint(msg.sender, initialSupply);
     }
 }

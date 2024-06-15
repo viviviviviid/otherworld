@@ -16,8 +16,9 @@ contract Proxy is Initializable, UUPSUpgradeable, ERC721URIStorageUpgradeable, O
     
     uint256 public paymentPrice; // delegateCall의 스토리지 충돌문제를 해결하기위해, 여기와 Logic.sol의 변수 선언순서가 같아야함. 그래야 스토리지 슬롯 번호에 똑같이 값이 들어가게 됨.
     uint256 public nextTokenId;
-    address public paymentLogic;
     ERC20Upgradeable public paymentToken;
+    address public paymentTokenAddress;
+    address public paymentLogic;
 
     function initialize(address _paymentToken, uint256 _paymentPrice, address _paymentLogic) public initializer {
         __ERC721_init("ITEM", "NFT");
@@ -25,7 +26,8 @@ contract Proxy is Initializable, UUPSUpgradeable, ERC721URIStorageUpgradeable, O
         __UUPSUpgradeable_init();
         __Ownable_init(msg.sender);
         paymentToken = ERC20Upgradeable(_paymentToken);
-        paymentPrice = _paymentPrice    ;
+        paymentTokenAddress = _paymentToken;
+        paymentPrice = _paymentPrice;
         nextTokenId = 0;
         paymentLogic = _paymentLogic;
         transferOwnership(msg.sender); // init owner
@@ -53,14 +55,18 @@ contract Proxy is Initializable, UUPSUpgradeable, ERC721URIStorageUpgradeable, O
         );
         require(success, "Logic call failed");
         emit PaymentPriceUpdated(paymentPrice);
-        // 테스트 1 : Logic 컨트랙트의 calculatePrice를 직접 실행했을때 값과, 
-        // 이 updatePaymentPrice를 실행해서 Logic의 함수가 실행되고, 
-        // price가 바뀐 현재 값이 동일한 값으로 출력되는가. 
-        // 즉 delegateCall이 성공적으로 호출되서 잘 적용됐는가
+        // 테스트 : Logic 컨트랙트의 calculatePrice를 직접 실행했을때 값과, 
+        //        이 updatePaymentPrice를 실행해서 Logic의 함수가 실행되고, 
+        //        price가 바뀐 현재 값이 동일한 값으로 출력되는가. 
+        //        즉 delegateCall이 성공적으로 호출되서 잘 적용됐는가
     }
 
     function getPaymentPrice() public view returns (uint256) {
         return paymentPrice;
+    }
+
+    function getTokenContract() public view returns (address) {
+        return paymentTokenAddress;
     }
 
     function getLogicContract() public view returns (address) {
@@ -71,8 +77,8 @@ contract Proxy is Initializable, UUPSUpgradeable, ERC721URIStorageUpgradeable, O
         require(paymentLogic != _paymentLogic, "It's the same contract address as before.");
         paymentLogic = _paymentLogic;
         emit UpdateLogicContract(paymentLogic);
-        // 테스트 1 : 새로 넣은 컨트랙트의 주소값이 제대로 들어가있는지 
-        // 즉, js에서 이 함수에 넣은 파라미터와, getLogicContract에서 return된 주소 값이 동일한지
+        // 테스트 : 새로 넣은 컨트랙트의 주소값이 제대로 들어가있는지 
+        //        즉, js에서 이 함수에 넣은 파라미터와, getLogicContract에서 return된 주소 값이 동일한지
     }
 
     function testDelegateCall() public onlyOwner returns (bool) {
@@ -89,6 +95,10 @@ contract Proxy is Initializable, UUPSUpgradeable, ERC721URIStorageUpgradeable, O
     // override
     function _msgData() internal view override(ContextUpgradeable) returns (bytes calldata) {
         return super._msgData();
+    }
+
+    function getNumber() public pure returns (uint256) {
+        return 1;
     }
 }
 
