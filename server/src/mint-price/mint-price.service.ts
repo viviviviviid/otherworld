@@ -18,10 +18,10 @@ export class MintPriceService {
     return this.mintPriceRepository.findOneBy({ id });
   }
 
-  async create(createMintPriceDTO: CreateMintPriceDTO): Promise<MintPrice> {
-    const newPrice = this.mintPriceRepository.create(createMintPriceDTO);
-    return this.mintPriceRepository.save(newPrice);
-  }
+  // async create(createMintPriceDTO: CreateMintPriceDTO): Promise<MintPrice> {
+  //   const newPrice = this.mintPriceRepository.create(createMintPriceDTO);
+  //   return this.mintPriceRepository.save(newPrice);
+  // }
 
   async updatePrice(updateMintPriceDTO: UpdateMintPriceDTO): Promise<MintPrice> {
     const id = 1;
