@@ -15,23 +15,38 @@ export class MintPriceService {
   ) {}
 
   async checkPrice() {
-    const id = 1;
-    return this.mintPriceRepository.findOneBy({ id });
+    try{
+      const id = 1;
+      return this.mintPriceRepository.findOneBy({ id });
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async create(createMintPriceDTO: CreateMintPriceDTO): Promise<MintPrice> {
-    const newPrice = this.mintPriceRepository.create(createMintPriceDTO);
-    return this.mintPriceRepository.save(newPrice);
+    try{
+      const newPrice = this.mintPriceRepository.create(createMintPriceDTO);
+      return this.mintPriceRepository.save(newPrice);
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async updatePrice(): Promise<MintPrice> {
-    const id = 1;
-    await updatePaymentPrice(); // delegateCall (proxy to logic contract)
-    const updatedMintPrice = await getPaymentPrice();
-  
-    var updateMintPriceDTO: UpdateMintPriceDTO = { mint_price: Number(updatedMintPrice) };
+    try{
+      const id = 1;
+      await updatePaymentPrice(); // delegateCall (proxy to logic contract)
+      const updatedMintPrice = await getPaymentPrice();
     
-    await this.mintPriceRepository.update(id, updateMintPriceDTO);
-    return this.mintPriceRepository.findOneBy({ id });
+      var updateMintPriceDTO: UpdateMintPriceDTO = { mint_price: Number(updatedMintPrice) };
+      
+      await this.mintPriceRepository.update(id, updateMintPriceDTO);
+      return this.mintPriceRepository.findOneBy({ id });
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 }

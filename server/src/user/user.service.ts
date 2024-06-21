@@ -13,20 +13,40 @@ export class UserService {
   ) {}
   
   async create(createUserDTO: CreateUserDTO): Promise<User> {
-    const newUser = this.userRepository.create(createUserDTO);
-    return this.userRepository.save(newUser);
+    try{
+      const newUser = this.userRepository.create(createUserDTO);
+      return this.userRepository.save(newUser);
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async findAll() {
-    return this.userRepository.find();
+    try{
+      return this.userRepository.find();
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async findOne(address: string) {
-    return this.userRepository.findOneBy({ address });
+    try{
+      return this.userRepository.findOneBy({ address });
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async remove(id: number) {
-    return this.userRepository.delete(id);
+    try{
+      return this.userRepository.delete(id);
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
 }

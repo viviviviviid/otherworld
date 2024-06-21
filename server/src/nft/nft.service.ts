@@ -18,25 +18,50 @@ export class NftSrcService {
   ) {}
 
   async create(createNftSrcDTO: CreateNftDTO): Promise<NFT> {
-    const newSrc = this.nftSrcRepository.create(createNftSrcDTO);
-    return this.nftSrcRepository.save(newSrc);
+    try{
+      const newSrc = this.nftSrcRepository.create(createNftSrcDTO);
+      return this.nftSrcRepository.save(newSrc);
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async findAll(address: string) {
-    return this.nftSrcRepository.findBy({ address })
+    try{
+      return this.nftSrcRepository.findBy({ address })
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async findOne(token_id: number) {
-    return this.nftSrcRepository.findOneBy({ token_id });
+    try{
+      return this.nftSrcRepository.findOneBy({ token_id });
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async update(token_id: number, updateNftSrcDTO: UpdateNftDTO) {
-    await this.nftSrcRepository.update(token_id, updateNftSrcDTO);
-    return this.nftSrcRepository.findOneBy({ token_id });
+    try{
+      await this.nftSrcRepository.update(token_id, updateNftSrcDTO);
+      return this.nftSrcRepository.findOneBy({ token_id });
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async remove(token_id: number) {
-    await this.nftSrcRepository.delete( token_id );
+    try{
+      await this.nftSrcRepository.delete( token_id );
+    }catch(err){
+      console.error("Error:", err);
+      throw new Error(err);
+    }
   }
 
   async mint(token_id: number) {
