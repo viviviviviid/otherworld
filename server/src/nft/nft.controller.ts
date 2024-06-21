@@ -22,10 +22,10 @@ export class NftSrcController {
     return this.nftSrcService.create(createNftSrcDTO);
   }
 
-  // @Post("mint/:id")
-  // mint(@Body() ) {
-  
-  // }
+  @Post("mint/:id")
+  mint(@Param('id') id: number ) {
+    this.nftSrcService.mint(id);
+  } 
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() UpdateNftSrcDTO: UpdateNftDTO) {

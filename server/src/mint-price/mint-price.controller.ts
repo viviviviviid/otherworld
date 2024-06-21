@@ -18,8 +18,8 @@ export class MintPriceController {
   }
 
   @Patch()
-  async updatePrice(@Body() updateMintPriceDTO: UpdateMintPriceDTO) {
-    return this.mintPriceService.updatePrice(updateMintPriceDTO)
+  async updatePrice() {
+    return await this.mintPriceService.updatePrice() ;
   }
   
 }

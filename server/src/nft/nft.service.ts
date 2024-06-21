@@ -4,6 +4,10 @@ import { UpdateNftDTO } from './dto/update-nft.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NFT } from './entities/nft.entity';
 import { Repository } from 'typeorm';
+import { config } from 'dotenv';
+import { approve, getPaymentPrice, mintNFT } from 'src/contract/interaction';
+
+config();
 
 @Injectable()
 export class NftSrcService {
@@ -36,9 +40,26 @@ export class NftSrcService {
   }
 
   async mint(token_id: number) {
-    // ERC-20 approve
-    // ERC-721 mint
-    // 민트 완료 후, isMint를 true로 변경
-    // 그 후, nft 테이블에 저장
+    try{
+      const currentMintPrice = await getPaymentPrice();
+
+      // ERC-20 approve
+      await approve(process.env.PROXY_CONTRACT_ADDRESS, currentMintPrice);
+  
+      // ERC-721 mint
+      const nftSrc = await this.nftSrcRepository.findOneBy({ token_id });
+      if (!nftSrc) {
+        throw new Error(`NFT with token_id ${token_id} not found`);
+      }
+      await mintNFT(process.env.USER_ADDRESS, nftSrc.address);
+  
+      // 민트 완료 후, isMint를 true로 변경
+      nftSrc.isMint = true;
+      await this.nftSrcRepository.update(token_id, nftSrc);
+      console.log('updated done')
+    }catch(err){
+      console.error("Error during mint process:", err);
+      throw new Error(err);
+    }
   }
 }
