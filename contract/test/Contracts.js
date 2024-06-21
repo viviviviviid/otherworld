@@ -11,6 +11,7 @@ const deployTokenFixture = async () => {
   const [owner, addr1, addr2] = await ethers.getSigners();
   const tokenContract = await ethers.deployContract("PaymentToken");
   await tokenContract.waitForDeployment();
+
   return { tokenContract, owner, addr1, addr2 };
 }
 
@@ -18,6 +19,7 @@ const deployLogicFixture = async () => {
   const [owner, addr1, addr2] = await ethers.getSigners();
   const logicContract = await ethers.deployContract("PaymentLogic");
   await logicContract.waitForDeployment();
+
   return { logicContract, owner, addr1, addr2 };
 }
 
@@ -26,7 +28,6 @@ const deployProxyFixture = async () => {
   const {tokenContract, logicContract} = await deploySubContracts();
   const proxyContract = await ethers.deployContract("Proxy");
   await proxyContract.waitForDeployment();
-
   await proxyContract.initialize(tokenContract.target, mockingNum, logicContract.target)
   await proxyContract.updatePaymentPrice();
 
@@ -46,6 +47,8 @@ describe("Token contract", () => {
   it("배포자에게 토큰의 초기 공급량을 할당해야 합니다.", async () => {
     const { tokenContract, owner } = await loadFixture(deployTokenFixture);
     const ownerBalance = await tokenContract.balanceOf(owner.address);
+    console.log("address: ", owner.address);
+    
     expect(await tokenContract.totalSupply()).to.equal(ownerBalance);
   });
 
@@ -86,7 +89,6 @@ describe("Proxy Contract", () =>  {
     it("초기화 후 파라미터로 사용된 토큰 컨트랙트 주소값이 정상적으로 확인되어야 합니다.", async () => {
       const { proxyContract, tokenContract } = await loadFixture(deployProxyFixture);
       expect(await proxyContract.getTokenContract()).to.equal(tokenContract.target);
-      
     });
 
     it("초기화 후 파라미터로 사용된 로직 컨트랙트 주소값이 정상적으로 확인되어야 합니다.", async () => {
@@ -120,6 +122,7 @@ describe("Proxy Contract", () =>  {
       const initPrice = await proxyContract.getPaymentPrice();
       await proxyContract.updateLogicContract(logicContract);
       await proxyContract.updatePaymentPrice();
+
       expect(await proxyContract.getPaymentPrice()).to.not.equal(initPrice);
     });
   });
@@ -130,24 +133,28 @@ describe("Proxy Contract", () =>  {
       const initialBalance = await tokenContract.balanceOf(owner.address);
       await approveAndMint(proxyContract, tokenContract, owner);
       const currentPaymentPrice = await proxyContract.getPaymentPrice();
+
       expect(await tokenContract.balanceOf(owner.address)).to.equal(initialBalance-currentPaymentPrice);
     });
 
     it("토큰 메타데이터에 정확한 URI가 포함되어야 합니다.", async () => {
       const { proxyContract, tokenContract, owner } = await loadFixture(deployProxyFixture);
       const tokenID = await approveAndMint(proxyContract, tokenContract, owner);
+
       expect(await proxyContract.getTokenURI(tokenID)).to.equal(mockingURI);
     });
 
     it("NFT 발행 후 다음 토큰 ID가 1 증가해야 합니다.", async () => {
       const { proxyContract, tokenContract, owner } = await loadFixture(deployProxyFixture);
       const tokenID = await approveAndMint(proxyContract, tokenContract, owner);
+
       expect(await proxyContract.getNextTokenID() - tokenID).to.equal(1);
     });
 
     it("msg.sender와 토큰 소유자가 일치해야 합니다.", async () => {
       const { proxyContract, tokenContract, owner } = await loadFixture(deployProxyFixture);
       const tokenID = await approveAndMint(proxyContract, tokenContract, owner);
+
       expect(await proxyContract.ownerOf(tokenID)).to.equal(owner.address);
     });
   });
@@ -157,5 +164,6 @@ const approveAndMint = async (proxyContract, tokenContract, owner) => {
   const tokenID = await proxyContract.getNextTokenID();
   await tokenContract.approve(proxyContract.target, await proxyContract.getPaymentPrice());
   await proxyContract.mintNFT(owner.address, mockingURI);
+
   return tokenID;
 }
