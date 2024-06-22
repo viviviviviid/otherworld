@@ -3,7 +3,7 @@ import { NftSrcService } from './nft.service';
 import { CreateNftDTO } from './dto/create-nft.dto';
 import { UpdateNftDTO } from './dto/update-nft.dto';
 
-@Controller('nft-src')
+@Controller('nft')
 export class NftSrcController {
   constructor(private readonly nftSrcService: NftSrcService) {}
 

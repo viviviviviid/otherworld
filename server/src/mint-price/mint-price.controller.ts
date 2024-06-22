@@ -3,7 +3,7 @@ import { MintPriceService } from './mint-price.service';
 import { CreateMintPriceDTO } from './dto/create-mint-price.dto';
 import { UpdateMintPriceDTO } from './dto/update-mint-price-dto';
 
-@Controller('mint-price')
+@Controller('price]')
 export class MintPriceController {
   constructor(private readonly mintPriceService: MintPriceService) {}
 
