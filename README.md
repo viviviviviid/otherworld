@@ -2,4 +2,4 @@
 
 서버는 jest, 컨트랙트는 hardhat으로 테스트 할 예정입니다.
 
-TypeScript, Nest.js, TypeORM, MariaDB을 지난 2개월간 처음 익혔기에, 실전에 적용하는 첫 프로젝트입니다.
+TypeScript, Nest.js, TypeORM, MariaDB을 지난 1개월간 처음 익혔기에, 실전에 적용하는 첫 프로젝트입니다.
